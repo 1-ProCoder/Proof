@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURUM | Luxury Dining Experience</title>
+    <meta name="description" content="Experience the pinnacle of culinary artistry at AURUM. A luxury dining destination offering exquisite dishes in a breathtaking atmosphere.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-light: #111111;
+            --gold: #d4af37;
+            --gold-hover: #b5952f;
+            --text-light: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Cormorant Garamond', serif;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: 18px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gold-text {
+            color: var(--gold);
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease;
+        }
+
+        .loader-logo {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            color: var(--gold);
+            letter-spacing: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.6; transform: scale(0.98); }
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--gold);
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -5px;
+            left: 50%;
+            background-color: var(--gold);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--gold);
+        }
+
+        .mobile-toggle {
+            display: none;
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        #home {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -2;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.9) 100%);
+            z-index: -1;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 0 20px;
+            transform: translateY(0); /* For Parallax */
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s 0.5s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s 0.7s forwards;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s 0.9s forwards;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            color: var(--bg-dark);
+        }
+
+        .countdown {
+            margin-top: 4rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s 1.2s forwards;
+        }
+
+        .cd-item {
+            text-align: center;
+        }
+
+        .cd-num {
+            font-size: 2.5rem;
+            font-family: var(--font-heading);
+            color: var(--gold);
+            display: block;
+        }
+
+        .cd-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+        }
+
+        /* Sections General */
+        section {
+            padding: 8rem 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            color: var(--gold);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: var(--gold);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* About Section */
+        #about {
+            background-color: var(--bg-light);
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--gold);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        /* Menu Section */
+        #menu {
+            background-color: var(--bg-dark);
+        }
+
+        .menu-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-right: 40px;
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+        }
+
+        .menu-tabs {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 15px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            color: var(--gold);
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .tab-btn.active::after {
+            width: 100%;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            /* Animation handled by JS */
+        }
+
+        .menu-item.show {
+            animation: fadeInSeq 0.5s forwards;
+        }
+
+        @keyframes fadeInSeq {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item-price {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            font-family: var(--font-heading);
+        }
+
+        .menu-item-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-indicator {
+            display: flex;
+            gap: 2px;
+            font-size: 0.9rem;
+            color: var(--gold);
+        }
+        .price-indicator span.dim {
+            opacity: 0.3;
+        }
+
+        /* Gallery Section */
+        #gallery {
+            background-color: var(--bg-light);
+        }
+
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-filter-btn {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .gallery-filter-btn.active, .gallery-filter-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-caption {
+            color: var(--bg-dark);
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            text-align: center;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        /* Lightbox */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.98);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .lightbox-content img {
+            max-height: 85vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .lightbox-caption {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: var(--gold);
+            font-family: var(--font-heading);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            color: var(--text-light);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover {
+            color: var(--gold);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 2.5rem;
+            cursor: pointer;
+            padding: 20px;
+            transition: color 0.3s;
+        }
+
+        .lightbox-nav:hover {
+            color: var(--gold);
+        }
+
+        .lightbox-prev { left: -70px; }
+        .lightbox-next { right: -70px; }
+
+        /* Reserve Section */
+        #reserve {
+            background-color: var(--bg-dark);
+            position: relative;
+        }
+
+        .reserve-container {
+            display: flex;
+            gap: 4rem;
+            background: var(--bg-light);
+            padding: 3rem;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .reserve-form {
+            flex: 2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            display: none;
+        }
+
+        .form-group.error input, .form-group.error select {
+            border-color: #ff4d4d;
+        }
+
+        .form-group.error .error-msg {
+            display: block;
+        }
+
+        .form-group.success input {
+            border-color: var(--gold);
+        }
+
+        .guest-counter {
+            display: flex;
+            align-items: center;
+            background: var(--bg-dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .guest-btn {
+            background: transparent;
+            border: none;
+            color: var(--gold);
+            font-size: 1.5rem;
+            width: 40px;
+            height: 48px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .guest-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .guest-count {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .booking-summary {
+            flex: 1;
+            background: var(--bg-dark);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .summary-total {
+            margin-top: auto;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            color: var(--gold);
+            font-family: var(--font-heading);
+        }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            padding: 4rem 5% 2rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .footer-socials a:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 2rem;
+        }
+
+        /* Scroll to Top */
+        #scrollTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        #scrollTop.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #scrollTop:hover {
+            transform: translateY(-5px);
+            background: var(--gold-hover);
+        }
+
+        /* Cookie Popup */
+        #cookiePopup {
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-light);
+            border: 1px solid var(--gold);
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            z-index: 9999;
+            transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        #cookiePopup.show {
+            bottom: 30px;
+        }
+
+        .cookie-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .cookie-btns {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .reserve-container {
+                flex-direction: column;
+            }
+            #about {
+                flex-direction: column;
+            }
+            .hero-title { font-size: 3.5rem; }
+            section { padding: 5rem 5%; }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { display: block; }
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--bg-light);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition);
+                border-left: 1px solid rgba(212, 175, 55, 0.2);
+            }
+            nav ul.active { right: 0; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1.2rem; }
+            .form-row { flex-direction: column; gap: 0; }
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+            .lightbox-close { right: 10px; top: -50px; }
+            .countdown { gap: 1rem; }
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-logo">AURUM</div>
+    </div>
+
+    <!-- Navigation -->
+    <header id="header">
+        <a href="#home" class="logo">AURUM</a>
+        <nav>
+            <ul id="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#menu" class="nav-link">Menu</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#reserve" class="nav-link">Reserve</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-toggle" id="mobile-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home">
+        <!-- Using a high quality placeholder video from pexels or similar -->
+        <video class="hero-video" autoplay loop muted playsinline>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-pouring-wine-in-a-glass-at-a-restaurant-4301-large.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <canvas id="particle-canvas"></canvas>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">A TASTE OF GOLD</h1>
+            <p class="hero-subtitle">Elevating gastronomy to an art form in a breathtaking setting.</p>
+            <a href="#reserve" class="btn">Book a Table</a>
+            
+            <div class="countdown">
+                <div class="cd-item">
+                    <span class="cd-num" id="cd-hours">00</span>
+                    <span class="cd-label">Hours</span>
+                </div>
+                <div class="cd-item">
+                    <span class="cd-num" id="cd-mins">00</span>
+                    <span class="cd-label">Mins</span>
+                </div>
+                <div class="cd-item">
+                    <span class="cd-num" id="cd-secs">00</span>
+                    <span class="cd-label">Secs</span>
+                </div>
+            </div>
+            <div style="margin-top: 10px; color: var(--text-muted); font-size: 0.9rem; opacity: 0; animation: fadeIn 1s 1.5s forwards;">Until Next Dinner Service</div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="reveal">
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Restaurant Interior">
+        </div>
+        <div class="about-text">
+            <h3>Our Philosophy</h3>
+            <h2 class="section-title" style="margin-bottom: 2rem;">Culinary Excellence</h2>
+            <p>At AURUM, we believe that dining is more than a meal; it is an immersive sensory experience. Our chefs meticulously craft each dish using the finest seasonal ingredients, combining classic techniques with modern innovation.</p>
+            <p>Set within a dark luxury aesthetic, our space is designed to transport you from the mundane into a world of opulence, where every detail is curated for your pleasure.</p>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Signature_of_Gordon_Ramsay.svg/1200px-Signature_of_Gordon_Ramsay.svg.png" alt="Chef Signature" style="width: 150px; margin-top: 2rem; filter: invert(1) sepia(1) saturate(5) hue-rotate(15deg) brightness(1.2);">
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">The Masterpiece</h2>
+        </div>
+        
+        <div class="menu-controls">
+            <div class="search-bar">
+                <input type="text" id="menu-search" placeholder="Search dishes...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div class="menu-tabs">
+                <button class="tab-btn active" data-target="starters">Starters</button>
+                <button class="tab-btn" data-target="mains">Main Courses</button>
+                <button class="tab-btn" data-target="desserts">Desserts</button>
+                <button class="tab-btn" data-target="wines">Fine Wines</button>
+            </div>
+        </div>
+
+        <div class="menu-grid" id="menu-grid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Visual Symphony</h2>
+        </div>
+
+        <div class="gallery-filters">
+            <button class="gallery-filter-btn active" data-filter="all">All</button>
+            <button class="gallery-filter-btn" data-filter="dishes">Dishes</button>
+            <button class="gallery-filter-btn" data-filter="interiors">Interiors</button>
+            <button class="gallery-filter-btn" data-filter="events">Events</button>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item dishes" data-src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="Wagyu Beef Tartare">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dish 1">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">Wagyu Beef Tartare</div>
+                </div>
+            </div>
+            <div class="gallery-item interiors" data-src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="The Grand Bar">
+                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Interior 1">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">The Grand Bar</div>
+                </div>
+            </div>
+            <div class="gallery-item dishes" data-src="https://images.unsplash.com/photo-1551218808-94e220e084d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="Truffle Risotto">
+                <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dish 2">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">Truffle Risotto</div>
+                </div>
+            </div>
+            <div class="gallery-item events" data-src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="Private Tasting Event">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Event 1">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">Private Tasting Event</div>
+                </div>
+            </div>
+            <div class="gallery-item interiors" data-src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="Main Dining Hall">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Interior 2">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">Main Dining Hall</div>
+                </div>
+            </div>
+            <div class="gallery-item dishes" data-src="https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" data-caption="Gold Leaf Chocolate Sphere">
+                <img src="https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dish 3">
+                <div class="gallery-overlay">
+                    <div class="gallery-caption">Gold Leaf Chocolate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox">
+        <div class="lightbox-close"><i class="fas fa-times"></i></div>
+        <div class="lightbox-nav lightbox-prev"><i class="fas fa-chevron-left"></i></div>
+        <div class="lightbox-nav lightbox-next"><i class="fas fa-chevron-right"></i></div>
+        <div class="lightbox-content">
+            <img src="" alt="Lightbox Image" id="lightbox-img">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Reserve Section -->
+    <section id="reserve" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Secure Your Table</h2>
+        </div>
+
+        <div class="reserve-container">
+            <div class="reserve-form">
+                <form id="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="John Doe">
+                            <div class="error-msg">Please enter a valid name.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com">
+                            <div class="error-msg">Please enter a valid email.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date">
+                            <div class="error-msg">Please select a future date.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <select id="time" name="time">
+                                <option value="" disabled selected>Select Time</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                                <option value="20:00">20:00</option>
+                                <option value="21:00">21:00</option>
+                                <option value="22:00">22:00</option>
+                            </select>
+                            <div class="error-msg">Please select a time.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Guests</label>
+                        <div class="guest-counter">
+                            <button type="button" class="guest-btn" id="guest-minus">-</button>
+                            <div class="guest-count" id="guest-display">2</div>
+                            <button type="button" class="guest-btn" id="guest-plus">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requests">Special Requests (Optional)</label>
+                        <input type="text" id="requests" name="requests" placeholder="Dietary requirements, celebrations...">
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1rem; opacity: 1; transform: none; animation: none;">Confirm Reservation</button>
+                </form>
+            </div>
+            
+            <div class="booking-summary">
+                <div class="summary-title">Reservation Summary</div>
+                <div class="summary-item">
+                    <span class="summary-label">Date</span>
+                    <span class="summary-value" id="sum-date">Select Date</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Time</span>
+                    <span class="summary-value" id="sum-time">Select Time</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Guests</span>
+                    <span class="summary-value" id="sum-guests">2 Persons</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Experience</span>
+                    <span class="summary-value gold-text">AURUM Signature</span>
+                </div>
+                
+                <div class="summary-total">
+                    <span>Deposit Required</span>
+                    <span>$100.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <a href="#home" class="footer-logo">AURUM</a>
+        <div class="footer-socials">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p class="footer-copy">&copy; 2026 AURUM Luxury Restaurant. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Cookie Popup -->
+    <div id="cookiePopup">
+        <div class="cookie-text">
+            We use cookies to elevate your experience, just as we elevate our dishes. By continuing to browse, you agree to our <a href="#" class="gold-text">Privacy Policy</a>.
+        </div>
+        <div class="cookie-btns">
+            <button class="btn btn-small" id="acceptCookies" style="opacity:1; transform:none; animation:none;">Accept</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Loading Screen Fade Out
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }, 1500);
+
+            // Sticky Header & Active Nav Link
+            const header = document.getElementById('header');
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const scrollTopBtn = document.getElementById('scrollTop');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                const scrollY = window.pageYOffset;
+
+                // Sticky Header
+                if (scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+
+                // Scroll to Top visibility
+                if (scrollY > 500) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
+
+                // Active Link
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Scroll to Top action
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Mobile Navigation Toggle
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            mobileToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Scroll Reveal Animation (Intersection Observer)
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Particle Canvas Effect for Hero Section
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedY = Math.random() * 0.5 + 0.1;
+                    this.opacity = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.y -= this.speedY;
+                    if (this.y < 0) {
+                        this.y = canvas.height;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                for (let i = 0; i < 50; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            initParticles();
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            // Parallax Effect for Hero
+            window.addEventListener('scroll', () => {
+                const scrollY = window.pageYOffset;
+                const heroContent = document.querySelector('.hero-content');
+                if (scrollY < window.innerHeight) {
+                    heroContent.style.transform = `translateY(${scrollY * 0.4}px)`;
+                }
+            });
+
+            // Countdown Timer
+            function updateCountdown() {
+                const now = new Date();
+                let target = new Date();
+                target.setHours(18, 0, 0, 0); // Next dinner service at 6 PM
+
+                if (now > target) {
+                    // If past 6 PM, set target to next day 6 PM
+                    target.setDate(target.getDate() + 1);
+                }
+
+                const diff = target - now;
+                
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cd-hours').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('cd-mins').innerText = mins.toString().padStart(2, '0');
+                document.getElementById('cd-secs').innerText = secs.toString().padStart(2, '0');
+            }
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            // Menu Data & Logic
+            const menuData = {
+                starters: [
+                    { title: "Wagyu Beef Tartare", price: "$32", desc: "Quail egg, black truffle shavings, gold leaf, crostini", tags: ["Chef's Special"], priceRange: 3 },
+                    { title: "Seared Scallops", price: "$28", desc: "Cauliflower purée, pancetta crisp, saffron beurre blanc", tags: ["Gluten-Free"], priceRange: 2 },
+                    { title: "Heirloom Tomato Consommé", price: "$22", desc: "Micro basil, olive oil pearls, parmesan tuile", tags: ["Vegetarian"], priceRange: 2 }
+                ],
+                mains: [
+                    { title: "Aurum Signature Filet", price: "$85", desc: "Center cut, foie gras, potato pavé, bordelaise sauce", tags: ["Chef's Special"], priceRange: 4 },
+                    { title: "Pan-Roasted Chilean Sea Bass", price: "$65", desc: "Miso glaze, baby bok choy, dashi broth", tags: ["Gluten-Free"], priceRange: 3 },
+                    { title: "Wild Mushroom Risotto", price: "$45", desc: "Porcini broth, aged parmesan, fresh truffles", tags: ["Vegetarian"], priceRange: 2 }
+                ],
+                desserts: [
+                    { title: "Gold Leaf Sphere", price: "$26", desc: "Dark chocolate, raspberry coulis, edible 24k gold", tags: ["Chef's Special"], priceRange: 2 },
+                    { title: "Madagascar Vanilla Bean Panna Cotta", price: "$18", desc: "Balsamic strawberries, pistachio dust", tags: ["Gluten-Free"], priceRange: 1 },
+                    { title: "Artisan Cheese Board", price: "$35", desc: "Selection of global cheeses, honeycomb, fig jam", tags: [], priceRange: 3 }
+                ],
+                wines: [
+                    { title: "Château Margaux 2010", price: "$850", desc: "Bordeaux, France. Exceptional vintage, rich and complex.", tags: [], priceRange: 4 },
+                    { title: "Opus One 2018", price: "$420", desc: "Napa Valley, USA. Bold, elegant, silky tannins.", tags: [], priceRange: 4 },
+                    { title: "Dom Pérignon Vintage 2012", price: "$350", desc: "Champagne, France. Vibrant, floral, precise.", tags: [], priceRange: 3 }
+                ]
+            };
+
+            const menuGrid = document.getElementById('menu-grid');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const searchInput = document.getElementById('menu-search');
+
+            function getPriceIndicators(range) {
+                let html = '<div class="price-indicator">';
+                for(let i=0; i<4; i++){
+                    html += `<span class="${i < range ? '' : 'dim'}">$</span>`;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function renderMenu(category, searchTerm = '') {
+                menuGrid.innerHTML = '';
+                let items = menuData[category];
+                
+                if (searchTerm) {
+                    const lowerTerm = searchTerm.toLowerCase();
+                    items = items.filter(item => 
+                        item.title.toLowerCase().includes(lowerTerm) || 
+                        item.desc.toLowerCase().includes(lowerTerm)
+                    );
+                }
+
+                if (items.length === 0) {
+                    menuGrid.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1; text-align:center;">No dishes found matching your search.</p>';
+                    return;
+                }
+
+                items.forEach((item, index) => {
+                    const tagHtml = item.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                    const itemHtml = `
+                        <div class="menu-item" style="animation-delay: ${index * 0.1}s">
+                            <div class="menu-item-header">
+                                <div class="menu-item-title">${item.title}</div>
+                                <div class="menu-item-price">${item.price}</div>
+                            </div>
+                            <div class="menu-item-desc">${item.desc}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="tags">${tagHtml}</div>
+                                ${getPriceIndicators(item.priceRange)}
+                            </div>
+                        </div>
+                    `;
+                    menuGrid.insertAdjacentHTML('beforeend', itemHtml);
+                });
+
+                // Trigger animations
+                setTimeout(() => {
+                    document.querySelectorAll('.menu-item').forEach(el => el.classList.add('show'));
+                }, 50);
+            }
+
+            // Init Menu
+            renderMenu('starters');
+
+            // Tab Switching
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    searchInput.value = ''; // Clear search on tab switch
+                    renderMenu(e.target.dataset.target);
+                });
+            });
+
+            // Menu Search
+            searchInput.addEventListener('input', (e) => {
+                const activeTab = document.querySelector('.tab-btn.active').dataset.target;
+                renderMenu(activeTab, e.target.value);
+            });
+
+            // Gallery Filtering
+            const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+
+                    galleryItems.forEach(item => {
+                        if (filter === 'all' || item.classList.contains(filter)) {
+                            item.style.display = 'block';
+                            // Re-trigger animation by resetting opacity and transform
+                            setTimeout(() => {
+                                item.style.opacity = '1';
+                                item.style.transform = 'scale(1)';
+                            }, 50);
+                        } else {
+                            item.style.display = 'none';
+                            item.style.opacity = '0';
+                            item.style.transform = 'scale(0.8)';
+                        }
+                    });
+                });
+            });
+
+            // Lightbox functionality
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const closeBtn = document.querySelector('.lightbox-close');
+            const prevBtn = document.querySelector('.lightbox-prev');
+            const nextBtn = document.querySelector('.lightbox-next');
+            
+            let currentImageIndex = 0;
+            // Get currently visible gallery items
+            let visibleItems = [];
+
+            function updateVisibleItems() {
+                visibleItems = Array.from(galleryItems).filter(item => item.style.display !== 'none');
+            }
+
+            function showLightboxImage(index) {
+                if (index < 0) index = visibleItems.length - 1;
+                if (index >= visibleItems.length) index = 0;
+                currentImageIndex = index;
+                
+                const item = visibleItems[currentImageIndex];
+                lightboxImg.src = item.dataset.src;
+                lightboxCaption.innerText = item.dataset.caption;
+            }
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    updateVisibleItems();
+                    currentImageIndex = visibleItems.indexOf(item);
+                    showLightboxImage(currentImageIndex);
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showLightboxImage(currentImageIndex - 1);
+            });
+
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showLightboxImage(currentImageIndex + 1);
+            });
+
+            // Close lightbox on outside click
+            lightbox.addEventListener('click', (e) => {
+                if(e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Keyboard nav for lightbox
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                if (e.key === 'Escape') {
+                    lightbox.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+                if (e.key === 'ArrowLeft') showLightboxImage(currentImageIndex - 1);
+                if (e.key === 'ArrowRight') showLightboxImage(currentImageIndex + 1);
+            });
+
+            // Reserve Form Validation & Logic
+            const form = document.getElementById('booking-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const dateInput = document.getElementById('date');
+            const timeSelect = document.getElementById('time');
+            
+            const guestMinus = document.getElementById('guest-minus');
+            const guestPlus = document.getElementById('guest-plus');
+            const guestDisplay = document.getElementById('guest-display');
+            let guestCount = 2;
+
+            // Summary Elements
+            const sumDate = document.getElementById('sum-date');
+            const sumTime = document.getElementById('sum-time');
+            const sumGuests = document.getElementById('sum-guests');
+
+            // Prevent past dates
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+
+            // Update Guest Counter
+            function updateGuests(val) {
+                guestCount += val;
+                if (guestCount < 1) guestCount = 1;
+                if (guestCount > 12) guestCount = 12;
+                guestDisplay.innerText = guestCount;
+                sumGuests.innerText = `${guestCount} Person${guestCount > 1 ? 's' : ''}`;
+            }
+
+            guestMinus.addEventListener('click', () => updateGuests(-1));
+            guestPlus.addEventListener('click', () => updateGuests(1));
+
+            // Live Summary Update
+            dateInput.addEventListener('change', (e) => {
+                if(e.target.value) {
+                    const dateObj = new Date(e.target.value);
+                    sumDate.innerText = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    validateField(dateInput);
+                } else {
+                    sumDate.innerText = 'Select Date';
+                }
+            });
+
+            timeSelect.addEventListener('change', (e) => {
+                if(e.target.value) {
+                    sumTime.innerText = e.target.value;
+                    validateField(timeSelect);
+                } else {
+                    sumTime.innerText = 'Select Time';
+                }
+            });
+
+            function validateField(input) {
+                const group = input.closest('.form-group');
+                let isValid = true;
+
+                if (input.type === 'email') {
+                    const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+                    isValid = re.test(input.value.trim());
+                } else {
+                    isValid = input.value.trim() !== '';
+                }
+
+                if (isValid) {
+                    group.classList.remove('error');
+                    group.classList.add('success');
+                } else {
+                    group.classList.remove('success');
+                    group.classList.add('error');
+                }
+                return isValid;
+            }
+
+            [nameInput, emailInput].forEach(input => {
+                input.addEventListener('input', () => {
+                    if(input.value.trim() !== '') validateField(input);
+                });
+                input.addEventListener('blur', () => validateField(input));
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let isFormValid = true;
+
+                [nameInput, emailInput, dateInput, timeSelect].forEach(input => {
+                    if (!validateField(input)) isFormValid = false;
+                });
+
+                if (isFormValid) {
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Processing...';
+                    btn.style.pointerEvents = 'none';
+
+                    // Simulate API Call
+                    setTimeout(() => {
+                        btn.innerText = 'Reservation Confirmed!';
+                        btn.style.background = 'var(--gold)';
+                        btn.style.color = 'var(--bg-dark)';
+                        
+                        setTimeout(() => {
+                            form.reset();
+                            sumDate.innerText = 'Select Date';
+                            sumTime.innerText = 'Select Time';
+                            guestCount = 2;
+                            guestDisplay.innerText = guestCount;
+                            sumGuests.innerText = '2 Persons';
+                            
+                            btn.innerText = originalText;
+                            btn.style.background = 'transparent';
+                            btn.style.color = 'var(--gold)';
+                            btn.style.pointerEvents = 'all';
+                            
+                            document.querySelectorAll('.form-group').forEach(g => g.classList.remove('success', 'error'));
+                        }, 3000);
+                    }, 1500);
+                }
+            });
+
+            // Cookie Popup
+            setTimeout(() => {
+                document.getElementById('cookiePopup').classList.add('show');
+            }, 3000);
+
+            document.getElementById('acceptCookies').addEventListener('click', () => {
+                document.getElementById('cookiePopup').classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
